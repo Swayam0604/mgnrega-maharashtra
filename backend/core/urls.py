@@ -15,8 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.http import JsonResponse
+from rest_framework.routers import DefaultRouter
+from django.http import JsonResponse
+from mgnrega.views import DistrictViewSet, MetricViewSet
+
+router = DefaultRouter()
+router.register(r'districts', DistrictViewSet, basename='district')
+router.register(r'metrics', MetricViewSet, basename='metric')
+
+
 
 def health(request):
     return JsonResponse({ "status": "ok" })
@@ -24,4 +33,5 @@ def health(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("health/", health),
+    path('api/', include(router.urls))
 ]
