@@ -3,17 +3,19 @@ from django.db import models
 # Create your models here.
 
 class District(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name_en = models.CharField(max_length=64, null=True, blank=True)
+    name_hi = models.CharField(max_length=64, null=True, blank=True)
+    name_mr = models.CharField(max_length=64, null=True, blank=True)
     state_code = models.CharField(max_length=10, default='18') # 18 IS FOR MAHARASHTRA
     centroid_lat = models.FloatField(null=True, blank=True)
     centroid_lng = models.FloatField(null=True, blank =True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
+        return self.name_en
 
     class Meta:
-        ordering = ['name']
+        ordering = ['name_en']
 
 class MonthlyMetric(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name='metrics')
@@ -48,4 +50,4 @@ class RawSnapshot(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-        
+

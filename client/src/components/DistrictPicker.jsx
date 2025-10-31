@@ -5,6 +5,8 @@ import { useLang } from "../LanguageProvider";
 import { translations } from "../locales";
 import axios from "axios";
 
+const API_URL = "https://mgnrega-maharashtra.onrender.com/api";
+
 export default function DistrictPicker() {
   const { setSelectedDistrict } = useDistrictStore();
   const [search, setSearch] = useState("");
@@ -17,18 +19,10 @@ export default function DistrictPicker() {
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await axios.get(
-          "https://mgnrega-maharashtra.onrender.com/api/districts/",
-          {
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        );
-
-        // Handle paginated response
+        const response = await axios.get(`${API_URL}/districts/`, {
+          headers: { Accept: "application/json" },
+        });
         const data = response.data.results || response.data;
-        console.log("Districts loaded:", data);
         setDistricts(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
@@ -43,8 +37,12 @@ export default function DistrictPicker() {
     fetchDistricts();
   }, []);
 
+  // Pick display field by language
+  const nameFor = (d) =>
+    lang === "en" ? d.name_en : lang === "hi" ? d.name_hi : d.name_mr;
+
   const filtered = districts.filter((d) =>
-    d.name.toLowerCase().includes(search.toLowerCase())
+    nameFor(d).toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -55,6 +53,7 @@ export default function DistrictPicker() {
           <h1 className="text-4xl font-bold text-gray-900 mb-2">{t.title}</h1>
           <p className="text-lg text-gray-600">{t.pickerHint}</p>
         </div>
+
         <div className="relative mb-6">
           <input
             type="text"
@@ -79,9 +78,7 @@ export default function DistrictPicker() {
                 onClick={() => setSelectedDistrict(district)}
                 className="w-full p-4 bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-200 text-left border-l-4 border-emerald-500 hover:border-emerald-600 text-gray-900"
               >
-                <p className="font-semibold text-white text-lg">
-                  {district.name}
-                </p>
+                <p className="font-semibold text-lg">{nameFor(district)}</p>
               </button>
             ))}
           </div>

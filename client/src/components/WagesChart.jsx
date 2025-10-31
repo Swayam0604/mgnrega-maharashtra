@@ -1,7 +1,7 @@
 import React from "react";
 import {
-  LineChart,
-  Line,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -11,7 +11,7 @@ import {
 import { useLang } from "../LanguageProvider";
 import { translations } from "../locales";
 
-export default function MetricsChart({ metrics }) {
+export default function WagesChart({ metrics }) {
   const { lang } = useLang();
   const t = translations[lang];
 
@@ -19,27 +19,23 @@ export default function MetricsChart({ metrics }) {
 
   const data = [...metrics].reverse().map((m) => ({
     month: `${m.year}-${String(m.month).padStart(2, "0")}`,
-    PersonDays: m.persondays,
     Wages: Math.round(m.wages_disbursed / 100000), // in lakhs
   }));
 
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <LineChart data={data}>
+      <BarChart data={data}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="month" />
         <YAxis />
         <Tooltip
           formatter={(value, name) => {
-            if (name === "PersonDays")
-              return [value, t.personDays || "Person-Days"];
             if (name === "Wages") return [value, t.wages || "Wages (₹)"];
             return [value, name];
           }}
         />
-        <Line type="monotone" dataKey="PersonDays" stroke="#1d4ed8" />
-        <Line type="monotone" dataKey="Wages" stroke="#eab308" />
-      </LineChart>
+        <Bar dataKey="Wages" fill="#10b981" />
+      </BarChart>
     </ResponsiveContainer>
   );
 }

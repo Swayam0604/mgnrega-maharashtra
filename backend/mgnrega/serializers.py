@@ -4,7 +4,7 @@ from .models import District, MonthlyMetric, RawSnapshot
 class DistrictSerializers(serializers.ModelSerializer):
     class Meta:
         model = District
-        fields = ['id', 'name', 'state_code', 'centroid_lat', 'centroid_lng']
+        fields = ['id', 'name_en', 'name_hi', 'name_mr', 'state_code', 'centroid_lat', 'centroid_lng']
 
 
 class MonthlyMetricSerializer(serializers.ModelSerializer):
