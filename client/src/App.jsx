@@ -9,7 +9,7 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("https://mgnrega-maharashtra.onrender.com/api/districts/")
+      .get("/api/districts/")
       .then((res) => setDistricts(res.data.results || res.data))
       .catch((err) => console.error("Failed to fetch districts:", err));
   }, [setDistricts]);

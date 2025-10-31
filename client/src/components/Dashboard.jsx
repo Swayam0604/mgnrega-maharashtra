@@ -5,7 +5,7 @@ import { translations } from "../locales";
 import axios from "axios";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-axios.get("https://mgnrega-maharashtra.onrender.com/api/districts/");
+const API_URL = "https://mgnrega-maharashtra.onrender.com/api";
 
 export default function Dashboard() {
   const { selectedDistrict, setSelectedDistrict } = useDistrictStore();
@@ -52,7 +52,7 @@ export default function Dashboard() {
       <div className="max-w-4xl mx-auto mb-6">
         <button
           onClick={() => setSelectedDistrict(null)}
-          className="px-4 py-2 bg-white rounded-lg shadow text-white text-gray-900 hover:shadow-md"
+          className="px-4 py-2 bg-white rounded-lg shadow text-gray-900 hover:shadow-md"
         >
           ← Back
         </button>
