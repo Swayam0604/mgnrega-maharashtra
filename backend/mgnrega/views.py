@@ -16,7 +16,7 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
     def summary(self, request, pk= None):
         """GET LATEST MONTH SUMMARY WITH DELTA FROM PREVIOUS MONTH"""
         district = self.get_object()
-        latest = district.metric.order_by('-year','month').first()
+        latest = district.metrics.order_by('-year','month').first()
 
         if not latest:
             return Response({"error": "No Data"}, status= status.HTTP_404_NOT_FOUND)
@@ -61,6 +61,13 @@ class DistrictViewSet(viewsets.ReadOnlyModelViewSet):
 class MetricViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = MonthlyMetric.objects.all()
     serializer_class = MonthlyMetricSerializer
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+        district_id = self.request.query_params.get('district_id')
+        if district_id:
+            qs = qs.filter(district_id=district_id)
+        return qs
 
     @action(detail=False, methods=['get'])
     def compare(self, request):
