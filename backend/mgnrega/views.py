@@ -97,4 +97,20 @@ class MetricViewSet(viewsets.ReadOnlyModelViewSet):
             "state_average": state_avg['avg'],
             "metric": metric,
         })
+    
 
+from rest_framework.decorators import api_view
+from .serializers import MonthlyMetricSerializer
+from .models import MonthlyMetric
+@api_view(['GET'])
+def district_metrics(request, pk):
+    """Get all metrics for a specific district"""
+    try:
+        metrics = MonthlyMetric.objects.filter(district_id=pk).order_by('-year', '-month')
+        serializer = MonthlyMetricSerializer(metrics, many=True)
+        return Response({
+            'count': metrics.count(),
+            'results': serializer.data
+        })
+    except Exception as e:
+        return Response({'error': str(e)}, status=400)
