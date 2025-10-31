@@ -20,9 +20,9 @@ export default function Dashboard() {
 
     const fetchMetrics = async () => {
       try {
-        console.log(`Fetching metrics for district ${selectedDistrict.id}`);
+        // Use the existing /metrics/ endpoint with district_id filter
         const response = await axios.get(
-          `${API_URL}/districts/${selectedDistrict.id}/metrics/`
+          `${API_URL}/metrics/?district_id=${selectedDistrict.id}`
         );
         console.log("Metrics response:", response.data);
 
@@ -40,6 +40,7 @@ export default function Dashboard() {
 
     fetchMetrics();
   }, [selectedDistrict]);
+
 
   if (!selectedDistrict) return null;
 
