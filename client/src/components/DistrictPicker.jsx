@@ -79,7 +79,7 @@ export default function DistrictPicker() {
                 onClick={() => setSelectedDistrict(district)}
                 className="w-full p-4 bg-white rounded-xl shadow-md hover:shadow-xl hover:scale-105 transition-all duration-200 text-left border-l-4 border-emerald-500 hover:border-emerald-600 text-gray-900"
               >
-                <p className="font-semibold text-gray-900 text-lg">
+                <p className="font-semibold text-white text-lg">
                   {district.name}
                 </p>
               </button>
