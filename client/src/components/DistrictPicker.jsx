@@ -10,9 +10,13 @@ export default function DistrictPicker() {
   const { lang } = useLang();
   const t = translations[lang];
 
-  const filtered = districts.filter((d) =>
-    d.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered =
+    districts && Array.isArray(districts)
+      ? districts.filter((d) =>
+          d.name.toLowerCase().includes(search.toLowerCase())
+        )
+      : [];
+
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-br from-emerald-50 via-blue-50 to-indigo-100">
