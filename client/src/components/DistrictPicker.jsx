@@ -10,23 +10,37 @@ export default function DistrictPicker() {
   const [search, setSearch] = useState("");
   const [districts, setDistricts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { lang } = useLang();
   const t = translations[lang];
 
   useEffect(() => {
-    axios
-      .get("https://mgnrega-maharashtra.onrender.com/api/districts/")
-      .then((res) => {
-        const data = Array.isArray(res.data)
-          ? res.data
-          : res.data.results || [];
-        setDistricts(data);
+    const fetchDistricts = async () => {
+      try {
+        const response = await axios.get(
+          "https://mgnrega-maharashtra.onrender.com/api/districts/",
+          {
+            headers: {
+              Accept: "application/json",
+            },
+          }
+        );
+
+        // Handle paginated response
+        const data = response.data.results || response.data;
+        console.log("Districts loaded:", data);
+        setDistricts(Array.isArray(data) ? data : []);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to fetch districts:", err.message);
+        setError("Failed to load districts");
+        setDistricts([]);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch districts:", err);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchDistricts();
   }, []);
 
   const filtered = districts.filter((d) =>
@@ -50,10 +64,13 @@ export default function DistrictPicker() {
             className="w-full pl-3 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:outline-none text-gray-900 placeholder-gray-500"
           />
         </div>
+
         {loading ? (
-          <p className="text-center text-gray-600">Loading districts...</p>
-        ) : filtered.length === 0 ? (
-          <p className="text-center text-gray-600">No districts found</p>
+          <p className="text-center text-gray-600 py-8">Loading districts...</p>
+        ) : error ? (
+          <p className="text-center text-red-600 py-8">{error}</p>
+        ) : districts.length === 0 ? (
+          <p className="text-center text-gray-600 py-8">No districts found</p>
         ) : (
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {filtered.map((district) => (
