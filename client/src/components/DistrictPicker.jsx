@@ -22,11 +22,11 @@ export default function DistrictPicker() {
         const response = await axios.get(`${API_URL}/districts/`, {
           headers: { Accept: "application/json" },
         });
-        const data = response.data.results || response.data;
+        const data = response.data?.results || response.data || [];
         setDistricts(Array.isArray(data) ? data : []);
         setError(null);
       } catch (err) {
-        console.error("Failed to fetch districts:", err.message);
+        console.error("Failed to fetch districts:", err?.message || err);
         setError("Failed to load districts");
         setDistricts([]);
       } finally {
@@ -37,12 +37,18 @@ export default function DistrictPicker() {
     fetchDistricts();
   }, []);
 
-  // Pick display field by language
-  const nameFor = (d) =>
-    lang === "en" ? d.name_en : lang === "hi" ? d.name_hi : d.name_mr;
+  // Pick display name by language, with safe fallbacks
+  const nameFor = (d) => {
+    if (!d) return "";
+    const en = d.name_en ?? d.name ?? "";
+    const hi = d.name_hi ?? "";
+    const mr = d.name_mr ?? "";
+    return lang === "en" ? en : (lang === "hi" ? hi : mr) || en || "";
+  };
 
-  const filtered = districts.filter((d) =>
-    nameFor(d).toLowerCase().includes(search.toLowerCase())
+  const safeSearch = (search ?? "").toLowerCase();
+  const filtered = (districts ?? []).filter((d) =>
+    (nameFor(d) || "").toLowerCase().includes(safeSearch)
   );
 
   return (
@@ -68,7 +74,7 @@ export default function DistrictPicker() {
           <p className="text-center text-gray-600 py-8">Loading districts...</p>
         ) : error ? (
           <p className="text-center text-red-600 py-8">{error}</p>
-        ) : districts.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <p className="text-center text-gray-600 py-8">No districts found</p>
         ) : (
           <div className="space-y-3 max-h-96 overflow-y-auto">
