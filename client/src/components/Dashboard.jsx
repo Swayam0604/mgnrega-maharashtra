@@ -5,7 +5,7 @@ import { translations } from "../locales";
 import axios from "axios";
 import LanguageSwitcher from "./LanguageSwitcher";
 
-const API_URL = "http://localhost:8000/api";
+axios.get("https://mgnrega-maharashtra.onrender.com/api/districts/");
 
 export default function Dashboard() {
   const { selectedDistrict, setSelectedDistrict } = useDistrictStore();
