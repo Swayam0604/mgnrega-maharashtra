@@ -4,6 +4,7 @@ import { useLang } from "../LanguageProvider";
 import { translations } from "../locales";
 import axios from "axios";
 import LanguageSwitcher from "./LanguageSwitcher";
+import MetricsChart from "./MetricsChart";
 
 const API_URL = "https://mgnrega-maharashtra.onrender.com/api";
 
@@ -20,12 +21,9 @@ export default function Dashboard() {
 
     const fetchMetrics = async () => {
       try {
-        // Use the existing /metrics/ endpoint with district_id filter
         const response = await axios.get(
           `${API_URL}/metrics/?district_id=${selectedDistrict.id}`
         );
-        console.log("Metrics response:", response.data);
-
         const data = response.data.results || response.data;
         setMetrics(Array.isArray(data) ? data : []);
         setError(null);
@@ -41,9 +39,7 @@ export default function Dashboard() {
     fetchMetrics();
   }, [selectedDistrict]);
 
-
   if (!selectedDistrict) return null;
-
   const latestMetric = metrics && metrics.length > 0 ? metrics[0] : {};
 
   return (
@@ -95,7 +91,6 @@ export default function Dashboard() {
               </p>
               <p className="text-xs text-gray-500 mt-2">Latest month</p>
             </div>
-
             {/* Households */}
             <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-500">
               <p className="text-gray-600 text-sm font-semibold">
@@ -106,7 +101,6 @@ export default function Dashboard() {
               </p>
               <p className="text-xs text-gray-500 mt-2">Latest month</p>
             </div>
-
             {/* Wages */}
             <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
               <p className="text-gray-600 text-sm font-semibold">
@@ -117,7 +111,6 @@ export default function Dashboard() {
               </p>
               <p className="text-xs text-gray-500 mt-2">Latest month</p>
             </div>
-
             {/* Pending */}
             <div className="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-500">
               <p className="text-gray-600 text-sm font-semibold">
@@ -128,6 +121,14 @@ export default function Dashboard() {
               </p>
               <p className="text-xs text-gray-500 mt-2">Latest month</p>
             </div>
+          </div>
+
+          {/* Chart */}
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Trends Over Time
+            </h2>
+            <MetricsChart metrics={metrics} />
           </div>
 
           {/* Data Table */}
@@ -200,7 +201,6 @@ export default function Dashboard() {
                 months of data available
               </p>
             </div>
-
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <p className="text-gray-600 text-sm font-semibold">
                 Avg Person-Days/Month
@@ -214,7 +214,6 @@ export default function Dashboard() {
                   : 0}
               </p>
             </div>
-
             <div className="bg-white p-6 rounded-xl shadow-lg">
               <p className="text-gray-600 text-sm font-semibold">
                 Total Wages Disbursed
